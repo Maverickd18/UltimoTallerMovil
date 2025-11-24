@@ -1,0 +1,7 @@
+{
+  "name": "Realidad_ Aumentada",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
