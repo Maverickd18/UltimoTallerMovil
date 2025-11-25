@@ -1,0 +1,148 @@
+// src/app/shared/components/custom-input/custom-input.component.scss
+
+.custom-input-wrapper {
+  margin-bottom: 0;
+  animation: fadeIn 0.4s ease;
+
+  ion-item {
+    --background: transparent;
+    --border-style: none;
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-height: 50px;
+    --inner-border-width: 0 0 2px 0;
+    --border-color: #e0e0e0;
+    --inner-padding-bottom: 8px;
+    transition: --border-color 0.3s ease;
+
+    &:hover {
+      --border-color: #b0b0b0;
+    }
+
+    &.ion-focused {
+      --border-color: var(--ion-color-primary);
+    }
+
+    ion-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      text-transform: capitalize;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    ion-input {
+      font-size: 16px;
+      color: #1a1a1a;
+      --placeholder-color: #bbb;
+      --placeholder-font-weight: 400;
+      --placeholder-opacity: 0.7;
+      --padding-top: 0;
+      --padding-bottom: 0;
+      transition: color 0.2s ease;
+
+      &::placeholder {
+        color: #bbb;
+      }
+    }
+
+    ion-icon {
+      color: var(--ion-color-primary);
+      opacity: 0.6;
+      font-size: 20px;
+      transition: opacity 0.3s ease;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .toggle-password {
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .error-message {
+    margin-top: 6px;
+    padding-left: 0;
+    animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    ion-text {
+      display: block;
+
+      small {
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: 0.2px;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .custom-input-wrapper {
+    ion-item {
+      --border-color: #333;
+
+      &:hover {
+        --border-color: #444;
+      }
+
+      ion-label {
+        color: #e0e0e0;
+      }
+
+      ion-input {
+        color: #ffffff;
+        --placeholder-color: #999;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .custom-input-wrapper {
+    ion-item {
+      --min-height: 45px;
+      --inner-padding-bottom: 6px;
+    }
+
+    ion-item ion-label {
+      font-size: 11px;
+    }
+
+    ion-item ion-input {
+      font-size: 15px;
+    }
+  }
+}

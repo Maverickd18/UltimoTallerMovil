@@ -1,0 +1,112 @@
+<!-- src/app/pages/register/register.page.html -->
+<ion-header [translucent]="true" class="auth-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login" class="custom-back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="auth-content">
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      
+      <!-- Header Section -->
+      <div class="auth-header-section">
+        <div class="icon-circle">
+          <ion-icon name="person-add"></ion-icon>
+        </div>
+        <h1 class="auth-title">Create Your Account</h1>
+        <p class="auth-subtitle">Join our community and get started with AR</p>
+      </div>
+
+      <!-- Form Section -->
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+        
+        <!-- Full Name Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Full Name"
+            type="text"
+            icon="person-outline"
+            placeholder="John Doe"
+            formControlName="name"
+            [errorMessage]="getErrorMessage('name')">
+          </app-custom-input>
+        </div>
+
+        <!-- Email Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Email Address"
+            type="email"
+            icon="mail-outline"
+            placeholder="your@email.com"
+            formControlName="email"
+            [errorMessage]="getErrorMessage('email')">
+          </app-custom-input>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Password"
+            type="password"
+            icon="lock-closed-outline"
+            placeholder="••••••••"
+            formControlName="password"
+            [errorMessage]="getErrorMessage('password')">
+          </app-custom-input>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Confirm Password"
+            type="password"
+            icon="lock-closed-outline"
+            placeholder="••••••••"
+            formControlName="confirmPassword"
+            [errorMessage]="getErrorMessage('confirmPassword')">
+          </app-custom-input>
+        </div>
+
+        <!-- Terms Checkbox -->
+        <div class="form-group terms-group">
+          <div class="checkbox-wrapper">
+            <ion-checkbox formControlName="terms"></ion-checkbox>
+            <ion-label class="terms-label">
+              I agree to the <a href="#" class="terms-link">terms and conditions</a>
+            </ion-label>
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('terms')?.touched && registerForm.get('terms')?.invalid">
+            <ion-text color="danger">
+              <small>You must accept the terms and conditions</small>
+            </ion-text>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <app-custom-button
+          text="Create Account"
+          type="submit"
+          color="primary"
+          icon="checkmark-circle-outline"
+          [loading]="loading"
+          [disabled]="!registerForm.valid"
+          class="submit-btn">
+        </app-custom-button>
+
+      </form>
+
+      <!-- Login Link -->
+      <div class="auth-footer">
+        <p class="footer-text">Already have an account? 
+          <a (click)="goToLogin()" class="footer-link">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

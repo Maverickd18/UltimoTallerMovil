@@ -1,0 +1,178 @@
+// src/app/shared/components/custom-button/custom-button.component.scss
+
+.custom-button {
+  width: 100%;
+  --border-radius: 8px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --padding-start: 0;
+  --padding-end: 0;
+  height: auto;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 8px 20px rgba(66, 133, 244, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ion-icon {
+    font-size: 18px;
+    margin: 0 6px;
+  }
+
+  .button-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-spinner {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+  }
+
+  &:not([disabled]) {
+    &:hover {
+      box-shadow: 0 12px 30px rgba(66, 133, 244, 0.35);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.25);
+    }
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Fill variants
+.custom-button[fill="outline"] {
+  --box-shadow: none;
+
+  &:not([disabled]) {
+    &:hover {
+      --box-shadow: none;
+      background: rgba(52, 168, 224, 0.05);
+    }
+  }
+}
+
+.custom-button[fill="clear"] {
+  --box-shadow: none;
+
+  &:not([disabled]) {
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+// Size variants
+.custom-button[size="small"] {
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  font-size: 13px;
+  min-height: 40px;
+}
+
+.custom-button[size="large"] {
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-size: 17px;
+  min-height: 56px;
+}
+
+// Ripple effect on click
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+// Animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .custom-button {
+    box-shadow: 0 8px 20px rgba(66, 133, 244, 0.15);
+
+    &:not([disabled]) {
+      &:hover {
+        box-shadow: 0 12px 30px rgba(66, 133, 244, 0.25);
+      }
+    }
+  }
+
+  .custom-button[fill="clear"] {
+    &:not([disabled]) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  .custom-button[fill="outline"] {
+    &:not([disabled]) {
+      &:hover {
+        background: rgba(66, 133, 244, 0.1);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .custom-button {
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .custom-button[size="large"] {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    min-height: 50px;
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .custom-button {
+    transition: none;
+
+    &:not([disabled]) {
+      &:hover,
+      &:active {
+        transform: none;
+      }
+    }
+  }
+}

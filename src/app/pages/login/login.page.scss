@@ -1,0 +1,330 @@
+// src/app/pages/login/login.page.scss
+
+// Import shared auth styles
+@import '../../shared/styles/auth-common.scss';
+
+.auth-wrapper {
+  min-height: 100%;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-rgb-800) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+  max-width: 420px;
+  width: 100%;
+  animation: slideUpFade 0.5s ease-out;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-header-section {
+  text-align: center;
+  margin-bottom: 35px;
+  animation: fadeInDown 0.6s ease 0.1s both;
+
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(66, 133, 244, 0.3);
+    animation: scaleIn 0.6s ease 0.2s both;
+
+    ion-icon {
+      font-size: 40px;
+      color: white;
+    }
+  }
+
+  .auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 15px 0 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .auth-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form {
+  animation: fadeInUp 0.6s ease 0.3s both;
+
+  .form-group {
+    margin-bottom: 20px;
+    animation: slideInLeft 0.4s ease both;
+
+    &:nth-child(1) { animation-delay: 0.35s; }
+    &:nth-child(2) { animation-delay: 0.4s; }
+  }
+
+  .form-extras {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    animation: slideInLeft 0.4s ease 0.45s both;
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      ion-checkbox {
+        --size: 18px;
+      }
+
+      ion-label {
+        font-size: 13px;
+        color: #666;
+        margin: 0;
+      }
+    }
+
+    .forgot-password {
+      font-size: 13px;
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--ion-color-primary-shade);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  animation: fadeInUp 0.6s ease 0.5s both;
+  
+  ion-button {
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(66, 133, 244, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover:not([disabled]) {
+      box-shadow: 0 12px 30px rgba(66, 133, 244, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &[disabled] {
+      opacity: 0.6;
+    }
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 30px 0 25px;
+  animation: fadeIn 0.6s ease 0.55s both;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  }
+
+  span {
+    padding: 0 15px;
+    color: #999;
+    font-weight: 500;
+    font-size: 13px;
+  }
+}
+
+.secondary-btn {
+  width: 100%;
+  animation: fadeIn 0.6s ease 0.6s both;
+
+  ion-button {
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 2px solid var(--ion-color-secondary);
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 25px;
+  animation: fadeIn 0.6s ease 0.65s both;
+
+  .footer-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+
+    .footer-link {
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--ion-color-primary-shade);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Responsive styles
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px 20px;
+    border-radius: 12px;
+  }
+
+  .auth-header-section {
+    margin-bottom: 28px;
+
+    .auth-title {
+      font-size: 24px;
+    }
+
+    .auth-subtitle {
+      font-size: 13px;
+    }
+  }
+
+  .auth-form .form-group {
+    margin-bottom: 16px;
+  }
+
+  .auth-form .form-extras {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .auth-wrapper {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .auth-container {
+    background: #0f0f1e;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .auth-header-section .auth-title {
+    color: #ffffff;
+  }
+
+  .auth-header-section .auth-subtitle {
+    color: #a0a0a0;
+  }
+
+  .auth-form .form-extras .remember-me ion-label {
+    color: #a0a0a0;
+  }
+
+  .divider {
+    &::before,
+    &::after {
+      background: linear-gradient(to right, transparent, #333, transparent);
+    }
+
+    span {
+      color: #666;
+    }
+  }
+
+  .auth-footer .footer-text {
+    color: #a0a0a0;
+  }
+}

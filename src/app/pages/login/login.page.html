@@ -1,0 +1,94 @@
+<!-- src/app/pages/login/login.page.html -->
+<ion-header [translucent]="true" class="auth-header">
+  <ion-toolbar>
+    <ion-title>Sign In</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="auth-content">
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      
+      <!-- Header Section -->
+      <div class="auth-header-section">
+        <div class="icon-circle">
+          <ion-icon name="camera"></ion-icon>
+        </div>
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Sign in to your AR experience</p>
+      </div>
+
+      <!-- Form Section -->
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+        
+        <!-- Email Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Email Address"
+            type="email"
+            icon="mail-outline"
+            placeholder="your@email.com"
+            formControlName="email"
+            [errorMessage]="getErrorMessage('email')">
+          </app-custom-input>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <app-custom-input
+            label="Password"
+            type="password"
+            icon="lock-closed-outline"
+            placeholder="••••••••"
+            formControlName="password"
+            [errorMessage]="getErrorMessage('password')">
+          </app-custom-input>
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="form-extras">
+          <div class="remember-me">
+            <ion-checkbox></ion-checkbox>
+            <ion-label>Remember me</ion-label>
+          </div>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <app-custom-button
+          text="Sign In"
+          type="submit"
+          color="primary"
+          icon="log-in-outline"
+          [loading]="loading"
+          [disabled]="!loginForm.valid"
+          class="submit-btn">
+        </app-custom-button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <!-- Create Account Button -->
+      <app-custom-button
+        text="Create New Account"
+        color="secondary"
+        fill="outline"
+        icon="person-add-outline"
+        (clicked)="goToRegister()"
+        class="secondary-btn">
+      </app-custom-button>
+
+      <!-- Footer -->
+      <div class="auth-footer">
+        <p class="footer-text">Don't have an account yet? 
+          <a (click)="goToRegister()" class="footer-link">Sign up now</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

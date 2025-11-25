@@ -1,0 +1,30 @@
+<!-- src/app/shared/components/custom-input/custom-input.component.html -->
+<div class="custom-input-wrapper">
+  <ion-item>
+    <ion-label position="stacked">{{ label }}</ion-label>
+    <ion-input
+      [type]="inputType"
+      [placeholder]="placeholder"
+      [value]="value"
+      (ionChange)="onInputChange($event)"
+      [disabled]="disabled">
+    </ion-input>
+    <ion-icon 
+      *ngIf="icon" 
+      slot="start" 
+      [name]="icon">
+    </ion-icon>
+    <ion-icon
+      *ngIf="type === 'password'"
+      slot="end"
+      [name]="showPassword ? 'eye-off' : 'eye'"
+      (click)="togglePasswordVisibility()"
+      class="toggle-password">
+    </ion-icon>
+  </ion-item>
+  <div class="error-message" *ngIf="errorMessage">
+    <ion-text color="danger">
+      <small>{{ errorMessage }}</small>
+    </ion-text>
+  </div>
+</div>

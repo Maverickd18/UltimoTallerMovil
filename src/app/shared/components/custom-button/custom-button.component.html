@@ -1,0 +1,29 @@
+<!-- src/app/shared/components/custom-button/custom-button.component.html -->
+<ion-button
+  [type]="type"
+  [color]="color"
+  [expand]="expand"
+  [disabled]="disabled || loading"
+  [fill]="fill"
+  [size]="size"
+  (click)="onClick()"
+  class="custom-button">
+  
+  <ion-icon 
+    *ngIf="icon && iconPosition === 'start'" 
+    slot="start" 
+    [name]="icon">
+  </ion-icon>
+
+  <span *ngIf="loading" class="spinner">
+    <ion-spinner name="crescent"></ion-spinner>
+  </span>
+  
+  <span *ngIf="!loading" class="button-text">{{ text }}</span>
+
+  <ion-icon 
+    *ngIf="icon && iconPosition === 'end'" 
+    slot="end" 
+    [name]="icon">
+  </ion-icon>
+</ion-button>
