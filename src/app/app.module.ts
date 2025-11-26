@@ -11,18 +11,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 
+// Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyChycttV_4KvBvifjAl24WMJXL9OZrPhng",
+  authDomain: "realidaaumentada-be221.firebaseapp.com",
+  projectId: "realidaaumentada-be221",
+  storageBucket: "realidaaumentada-be221.firebasestorage.app",
+  messagingSenderId: "218794623806",
+  appId: "1:218794623806:web:cd4138d0bcc60dffc8226f"
 };
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [
+    BrowserModule, 
+    IonicModule.forRoot(), 
+    AppRoutingModule
+  ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
