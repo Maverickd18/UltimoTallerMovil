@@ -19,10 +19,13 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   isMarkerVisible: boolean = false;
   currentModel: any = null;
   currentModelType: string = 'box';
+  cameraReady: boolean = false;
 
   // Asset del usuario
   userAssetUrl: string = '';
   userAssetName: string = '';
+  markerType: string = 'hiro'; // 'hiro', 'kanji', o 'custom'
+  customMarkerUrl: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -38,37 +41,140 @@ export class ArViewerPage implements OnInit, AfterViewInit {
       if (params['assetUrl']) {
         this.userAssetUrl = params['assetUrl'];
         this.userAssetName = params['assetName'] || 'Asset';
+        this.markerType = params['markerType'] || 'hiro';
+        this.customMarkerUrl = params['markerUrl'] || '';
+        
+        console.log('📦 Asset recibido:', {
+          url: this.userAssetUrl,
+          name: this.userAssetName,
+          markerType: this.markerType,
+          markerUrl: this.customMarkerUrl
+        });
       }
     });
   }
 
   ngAfterViewInit() {
+    console.log('🎬 Iniciando configuración AR...');
+    
+    // Esperar a que AR.js cargue completamente
     setTimeout(() => {
+      this.initializeAR();
+    }, 2000);
+  }
+
+  async initializeAR() {
+    try {
+      console.log('🔧 Configurando AR.js...');
+      
+      // Verificar que la cámara esté disponible
+      await this.requestCameraPermission();
+      
+      // Configurar marcadores
       this.setupARMarkers();
-      this.createDefaultModel();
-    }, 1500);
+      
+      // Crear modelo por defecto o cargar asset del usuario
+      if (this.userAssetUrl) {
+        this.loadUserAsset();
+      } else {
+        this.createDefaultModel();
+      }
+      
+      this.showToast('📷 Cámara lista. Apunta al marcador', 'success');
+    } catch (error) {
+      console.error('❌ Error inicializando AR:', error);
+      this.showToast('Error al iniciar cámara', 'danger');
+    }
+  }
+
+  async requestCameraPermission() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      
+      this.cameraReady = true;
+      console.log('✅ Cámara inicializada');
+      
+      // Detener el stream temporal
+      stream.getTracks().forEach(track => track.stop());
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Error accediendo a la cámara:', error);
+      this.showToast('No se puede acceder a la cámara', 'danger');
+      return false;
+    }
   }
 
   setupARMarkers() {
     const marker = this.arMarkerRef?.nativeElement;
     if (!marker) {
-      this.showToast('Error: Marcador no encontrado', 'danger');
+      console.error('❌ Marcador no encontrado en el DOM');
       return;
     }
 
+    console.log('🎯 Configurando eventos del marcador...');
+
+    // Configurar eventos del marcador
     marker.addEventListener('markerFound', () => {
+      console.log('✅ ¡Marcador detectado!');
       this.isMarkerVisible = true;
       this.showToast('✓ ¡Marcador detectado!', 'success');
     });
 
     marker.addEventListener('markerLost', () => {
+      console.log('⚠️ Marcador perdido');
       this.isMarkerVisible = false;
     });
+
+    // Configurar marcador personalizado si existe
+    if (this.markerType === 'custom' && this.customMarkerUrl) {
+      console.log('🎨 Usando marcador personalizado:', this.customMarkerUrl);
+      marker.setAttribute('type', 'pattern');
+      marker.setAttribute('url', this.customMarkerUrl);
+    }
+
+    console.log('✅ Marcadores configurados');
+  }
+
+  loadUserAsset() {
+    const container = this.arContentRef?.nativeElement;
+    if (!container) {
+      console.error('❌ Contenedor AR no encontrado');
+      return;
+    }
+
+    console.log('📦 Cargando asset del usuario:', this.userAssetUrl);
+
+    // Limpiar contenido previo
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+
+    // Crear plano con la imagen del usuario
+    const plane = document.createElement('a-plane');
+    plane.setAttribute('src', this.userAssetUrl);
+    plane.setAttribute('position', '0 0.5 0');
+    plane.setAttribute('rotation', '-90 0 0');
+    plane.setAttribute('width', '1.5');
+    plane.setAttribute('height', '1.5');
+    plane.setAttribute('material', 'transparent: true');
+    
+    container.appendChild(plane);
+    this.currentModel = plane;
+    
+    console.log('✅ Asset del usuario cargado');
+    this.showToast(`Cargado: ${this.userAssetName}`, 'primary');
   }
 
   createDefaultModel() {
+    console.log('🎨 Creando modelo por defecto');
     this.changeModel('box');
-    this.showToast('💡 Descarga el marcador Hiro y imprime', 'primary');
   }
 
   downloadMarker(type: 'hiro' | 'kanji') {
@@ -87,20 +193,54 @@ export class ArViewerPage implements OnInit, AfterViewInit {
     this.showToast(`📥 Descargando ${type}...`, 'success');
   }
 
-  showMarkerInfo() {
-    this.alertController.create({
-      header: '📌 Cómo usar marcadores',
-      message: `1. Descargar marcador\n2. Imprimir en A4\n3. Apuntar cámara\n4. ¡Listo!`,
-      buttons: ['OK']
-    }).then(alert => alert.present());
+  async showMarkerInfo() {
+    let message = `
+      <div style="text-align: left; padding: 10px;">
+        <h3 style="margin-top: 0;">📌 Cómo usar</h3>
+        <ol style="padding-left: 20px;">
+          <li><strong>Descarga</strong> un marcador (botones abajo)</li>
+          <li><strong>Imprime</strong> en hoja A4</li>
+          <li><strong>Apunta</strong> tu cámara al marcador</li>
+          <li><strong>Mantén</strong> buena iluminación</li>
+        </ol>
+        
+        <h4>💡 Consejos:</h4>
+        <ul style="padding-left: 20px; font-size: 13px;">
+          <li>Usa papel blanco mate</li>
+          <li>Evita reflejos y sombras</li>
+          <li>Mantén el marcador plano</li>
+          <li>Distancia ideal: 30-50cm</li>
+        </ul>
+      </div>
+    `;
+
+    if (this.customMarkerUrl) {
+      message += `
+        <div style="text-align: center; margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+          <p style="margin: 5px 0; font-weight: 600; color: #4285F4;">
+            🎯 Tienes un marcador personalizado
+          </p>
+          <img src="${this.customMarkerUrl}" style="max-width: 150px; margin: 10px auto; border: 2px solid #4285F4; border-radius: 4px;">
+        </div>
+      `;
+    }
+
+    const alert = await this.alertController.create({
+      header: '📱 Guía de uso',
+      message: message,
+      buttons: ['Entendido']
+    });
+    
+    await alert.present();
   }
 
   changeModel(type: string) {
     const container = this.arContentRef?.nativeElement;
     if (!container) return;
 
-    if (this.currentModel) {
-      container.removeChild(this.currentModel);
+    // Limpiar modelo anterior
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
     }
 
     let model: any;
@@ -172,7 +312,7 @@ export class ArViewerPage implements OnInit, AfterViewInit {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `ar-${Date.now()}.png`;
+        link.download = `ar-screenshot-${Date.now()}.png`;
         link.click();
         URL.revokeObjectURL(url);
         this.showToast('📷 Screenshot guardado', 'success');
@@ -186,7 +326,7 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   async showToast(message: string, color: string) {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
+      duration: 2500,
       position: 'top',
       color
     });
@@ -194,7 +334,10 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   }
 
   ionViewWillLeave() {
+    // Limpiar recursos
     this.currentModel = null;
     this.isMarkerVisible = false;
+    this.cameraReady = false;
+    console.log('👋 Saliendo del visor AR');
   }
 }

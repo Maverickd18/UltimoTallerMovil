@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
-  <title>AR Ionic App</title>
+  <title>AR Experience - Realidad Aumentada</title>
 
   <base href="/" />
 
@@ -12,19 +12,139 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
 
+  <!-- PWA -->
   <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
-
-  <!-- add to homescreen for ios -->
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- AR.js Scripts -->
-  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <!-- AR.js Scripts - IMPORTANTE: Cargar en el orden correcto -->
+  <!-- 1. A-Frame primero -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  
+  <!-- 2. AR.js después de A-Frame -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  
+  <!-- Configuración global de AR.js -->
+  <script>
+    // Configuración global para mejorar rendimiento
+    window.AFRAME = window.AFRAME || {};
+    
+    // Log para debug
+    console.log('🚀 AR.js Scripts cargados');
+    console.log('📱 A-Frame version:', AFRAME.version);
+    
+    // Desactivar VR para mejor rendimiento en móviles
+    AFRAME.registerComponent('disable-in-ar', {
+      init: function () {
+        this.el.sceneEl.addEventListener('enter-vr', () => {
+          this.el.object3D.visible = false;
+        });
+        this.el.sceneEl.addEventListener('exit-vr', () => {
+          this.el.object3D.visible = true;
+        });
+      }
+    });
+  </script>
+
+  <style>
+    /* Estilos críticos para AR */
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Ocultar el splash de A-Frame */
+    .a-loader-title {
+      display: none !important;
+    }
+
+    /* Optimizar para móviles */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* Loading inicial */
+    #ar-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    #ar-loading.hidden {
+      display: none;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #4285F4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Loading Screen -->
+  <div id="ar-loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Cargando AR Experience...</div>
+  </div>
+
+  <!-- Aplicación principal -->
   <app-root></app-root>
+
+  <!-- Script para ocultar loading cuando la app cargue -->
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        const loading = document.getElementById('ar-loading');
+        if (loading) {
+          loading.classList.add('hidden');
+        }
+        console.log('✅ Aplicación cargada completamente');
+      }, 1500);
+    });
+
+    // Debug de cámara
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      console.log('✅ getUserMedia disponible');
+    } else {
+      console.warn('⚠️ getUserMedia NO disponible');
+    }
+
+    // Verificar HTTPS (requerido para cámara)
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      console.warn('⚠️ Se requiere HTTPS para acceder a la cámara');
+    }
+  </script>
 </body>
 
 </html>
