@@ -31,4 +31,7 @@ export class HomePage implements OnInit {
   goToAssets() {
     this.router.navigate(['/assets']);
   }
+  goToAR() {
+  this.router.navigate(['/ar-viewer']);
+}
 }

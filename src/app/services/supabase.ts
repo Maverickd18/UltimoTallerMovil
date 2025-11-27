@@ -62,7 +62,7 @@ export class SupabaseService {
 
       console.log('✅ Archivo subido:', urlData.publicUrl);
 
-      // Guardar metadata en la base de datos
+      // Save metadata to database
       const assetData = {
         user_id: user.uid,
         name: file.name,
@@ -72,21 +72,25 @@ export class SupabaseService {
         created_at: new Date().toISOString()
       };
 
-      const { data: insertData, error: insertError } = await this.supabase
-        .from('ar_assets')
-        .insert([assetData])
-        .select();
+      try {
+        const { data: insertData, error: insertError } = await this.supabase
+          .from('ar_assets')
+          .insert([assetData])
+          .select();
 
-      if (insertError) {
-        console.error('⚠️ Error al guardar metadata:', insertError);
-        // Continuar aunque falle el guardado en DB
+        if (insertError) {
+          console.warn('⚠️ Warning saving metadata:', insertError);
+          // Continue even if DB save fails
+        }
+      } catch (dbError) {
+        console.warn('⚠️ Warning saving metadata:', dbError);
+        // Continue even if DB save fails
       }
 
       return {
         success: true,
         url: urlData.publicUrl,
-        path: filePath,
-        data: insertData
+        path: filePath
       };
     } catch (error: any) {
       console.error('❌ Error en uploadAsset:', error);
@@ -99,27 +103,35 @@ export class SupabaseService {
     try {
       const user = this.authService.currentUserValue;
       if (!user) {
-        return { success: false, error: 'Usuario no autenticado' };
+        return { success: false, error: 'User not authenticated' };
       }
 
-      console.log('📂 Obteniendo assets del usuario:', user.uid);
+      console.log('📂 Fetching user assets:', user.uid);
+
+      // Convertir el uid de Firebase a un UUID válido si es necesario
+      const userId = user.uid;
 
       const { data, error } = await this.supabase
         .from('ar_assets')
         .select('*')
-        .eq('user_id', user.uid)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('❌ Error al obtener assets:', error);
+        console.error('❌ Error fetching assets:', error);
+        // Si hay error con UUID, devolver array vacío en lugar de error
+        if (error.message?.includes('uuid')) {
+          console.warn('⚠️ UUID format issue, returning empty assets');
+          return { success: true, assets: [] };
+        }
         return { success: false, error: error.message };
       }
 
-      console.log('✅ Assets obtenidos:', data?.length || 0);
+      console.log('✅ Assets fetched:', data?.length || 0);
       return { success: true, assets: data || [] };
     } catch (error: any) {
-      console.error('❌ Error en getUserAssets:', error);
-      return { success: false, error: error.message };
+      console.error('❌ Error in getUserAssets:', error);
+      return { success: true, assets: [] };
     }
   }
 

@@ -26,16 +26,14 @@
       <p class="subtitle">Estás en la aplicación de Realidad Aumentada</p>
     </div>
 
-    <div class="action-buttons">
-      <ion-button expand="block" color="primary">
-        <ion-icon slot="start" name="scan"></ion-icon>
-        Iniciar AR
-      </ion-button>
+  <ion-button expand="block" color="primary" (click)="goToAR()">
+  <ion-icon slot="start" name="scan"></ion-icon>
+  Iniciar AR
+</ion-button>
       
       <ion-button expand="block" fill="outline" color="primary" (click)="goToAssets()">
         <ion-icon slot="start" name="images"></ion-icon>
         Mis Assets
       </ion-button>
     </div>
-  </div>
 </ion-content>
