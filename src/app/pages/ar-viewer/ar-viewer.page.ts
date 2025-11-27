@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
 
 declare var AFRAME: any;
@@ -22,12 +22,17 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   contentScale: string = '1 1 1';
   isMarkerVisible: boolean = false;
 
+  // Asset del usuario (si viene desde Assets page)
+  userAssetUrl: string = '';
+  userAssetName: string = '';
+  
   // Modelo 3D actual
   currentModel: any = null;
   currentModelType: string = 'box';
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private toastController: ToastController,
     private alertController: AlertController
   ) {}
@@ -35,8 +40,9 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   ngOnInit() {
     console.log('AR Viewer inicializado');
     
-    // Obtener parámetros de la ruta (opcional)
+    // Obtener parámetros de la ruta
     this.route.queryParams.subscribe(params => {
+      // Parámetros opcionales del marcador
       if (params['marker']) {
         this.markerType = params['marker'];
         console.log('Tipo de marcador:', this.markerType);
@@ -44,6 +50,13 @@ export class ArViewerPage implements OnInit, AfterViewInit {
       if (params['markerUrl']) {
         this.markerUrl = params['markerUrl'];
         console.log('URL del marcador:', this.markerUrl);
+      }
+
+      // Parámetros del asset del usuario
+      if (params['assetUrl']) {
+        this.userAssetUrl = params['assetUrl'];
+        this.userAssetName = params['assetName'] || 'Asset';
+        console.log('Asset del usuario:', this.userAssetName, this.userAssetUrl);
       }
     });
   }
@@ -81,11 +94,53 @@ export class ArViewerPage implements OnInit, AfterViewInit {
       this.isMarkerVisible = false;
     });
 
-    // Crear modelo 3D inicial
-    this.createModel(this.currentModelType);
+    // Crear modelo 3D o cargar asset del usuario
+    if (this.userAssetUrl) {
+      console.log('Cargando asset del usuario:', this.userAssetUrl);
+      this.createImageModel(this.userAssetUrl);
+    } else {
+      console.log('Creando modelo 3D por defecto');
+      this.createModel(this.currentModelType);
+    }
     
     console.log('AR inicializado correctamente');
-    this.showToast('AR listo. Apunta a un marcador Hiro', 'primary');
+    const message = this.userAssetUrl 
+      ? `Asset "${this.userAssetName}" cargado` 
+      : 'AR listo. Apunta a un marcador Hiro';
+    this.showToast(message, 'primary');
+  }
+
+  // Crear modelo 3D de imagen desde URL
+  createImageModel(imageUrl: string) {
+    const container = this.arContentRef?.nativeElement;
+    
+    if (!container) {
+      console.error('Contenedor AR no encontrado');
+      return;
+    }
+
+    // Limpiar modelo anterior
+    if (this.currentModel) {
+      container.removeChild(this.currentModel);
+    }
+
+    console.log('Creando plano con imagen:', imageUrl);
+
+    // Crear plano con la imagen
+    const plane = document.createElement('a-plane');
+    plane.setAttribute('src', imageUrl);
+    plane.setAttribute('position', '0 0.5 0');
+    plane.setAttribute('rotation', '-90 0 0');
+    plane.setAttribute('width', '2');
+    plane.setAttribute('height', '2');
+    plane.setAttribute('material', 'transparent: true');
+    plane.setAttribute('animation', 'property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear');
+
+    container.appendChild(plane);
+    this.currentModel = plane;
+    this.currentModelType = 'user-image';
+    
+    console.log('Imagen cargada exitosamente');
   }
 
   createModel(type: string) {
@@ -186,7 +241,7 @@ export class ArViewerPage implements OnInit, AfterViewInit {
         return;
       }
 
-      // Método alternativo usando canvas
+      // Método usando canvas
       const renderer = scene.renderer;
       if (renderer && renderer.domElement) {
         const canvas = renderer.domElement;
@@ -229,7 +284,7 @@ export class ArViewerPage implements OnInit, AfterViewInit {
   ionViewWillLeave() {
     console.log('Saliendo de AR Viewer');
     
-    // Limpiar recursos cuando se sale de la vista
+    // Limpiar recursos
     if (this.currentModel) {
       this.currentModel = null;
     }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +13,7 @@ export class HomePage implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private toastController: ToastController
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -23,27 +21,14 @@ export class HomePage implements OnInit {
     const user = this.authService.currentUserValue;
     if (user) {
       this.userEmail = user.email || 'Usuario';
-      console.log('Usuario logueado:', this.userEmail);
-    } else {
-      console.log('No hay usuario logueado');
-      this.router.navigate(['/login']);
     }
   }
 
   async logout() {
-    const toast = await this.toastController.create({
-      message: '¡Hasta pronto!',
-      duration: 2000,
-      position: 'bottom',
-      color: 'success'
-    });
-    await toast.present();
-    
     await this.authService.logout();
     // El servicio ya redirige a /login
   }
-
-  goToAR() {
-    this.router.navigate(['/ar-viewer']);
+  goToAssets() {
+    this.router.navigate(['/assets']);
   }
 }
