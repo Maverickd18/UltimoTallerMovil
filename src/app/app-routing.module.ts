@@ -6,11 +6,11 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
-    canActivate: [AuthGuard] 
+    canActivate: [AuthGuard] // Protegido con AuthGuard
   },
   {
     path: '',
-    redirectTo: 'login', 
+    redirectTo: 'login', // Redirige a login por defecto
     pathMatch: 'full'
   },
   {
@@ -22,8 +22,18 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
   },
   {
+    path: 'ar-viewer',
+    loadChildren: () => import('./pages/ar-viewer/ar-viewer.module').then(m => m.ArViewerPageModule),
+    canActivate: [AuthGuard] // Protegido con AuthGuard
+  },
+  {
+    path: 'assets',
+    loadChildren: () => import('./pages/assets/assets.module').then(m => m.AssetsPageModule),
+    canActivate: [AuthGuard] // Protegido con AuthGuard
+  },
+  {
     path: '**',
-    redirectTo: 'login' 
+    redirectTo: 'login' // Cualquier ruta no encontrada va a login
   }
 ];
 

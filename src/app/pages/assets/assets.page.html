@@ -1,0 +1,93 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis Assets AR</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshAssets()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="assets-container">
+    
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <h2>Subir Nuevo Asset</h2>
+      <p class="subtitle">Sube imágenes para usar en AR</p>
+      
+      <div class="upload-zone" (click)="fileInput.click()">
+        <input 
+          #fileInput 
+          type="file" 
+          accept="image/*" 
+          (change)="onFileSelected($event)"
+          style="display: none">
+        
+        <ion-icon name="cloud-upload" class="upload-icon"></ion-icon>
+        <p class="upload-text">Click para seleccionar imagen</p>
+        <small>PNG, JPG, JPEG (Max 5MB)</small>
+      </div>
+
+      <ion-button 
+        *ngIf="selectedFile"
+        expand="block" 
+        color="primary"
+        (click)="uploadFile()"
+        [disabled]="uploading">
+        <ion-icon slot="start" name="cloud-upload"></ion-icon>
+        {{ uploading ? 'Subiendo...' : 'Subir ' + selectedFile.name }}
+      </ion-button>
+    </div>
+
+    <!-- Assets List -->
+    <div class="assets-list">
+      <h2>Tus Assets</h2>
+      
+      <div *ngIf="loading" class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando assets...</p>
+      </div>
+
+      <div *ngIf="!loading && assets.length === 0" class="empty-state">
+        <ion-icon name="images-outline"></ion-icon>
+        <p>No tienes assets aún</p>
+        <small>Sube tu primera imagen para empezar</small>
+      </div>
+
+      <ion-list *ngIf="!loading && assets.length > 0">
+        <ion-item *ngFor="let asset of assets" class="asset-item">
+          <ion-thumbnail slot="start">
+            <img [src]="asset.file_url" [alt]="asset.name">
+          </ion-thumbnail>
+          
+          <ion-label>
+            <h3>{{ asset.name }}</h3>
+            <p>{{ asset.created_at | date:'short' }}</p>
+          </ion-label>
+          
+          <ion-button 
+            slot="end" 
+            fill="clear" 
+            color="primary"
+            (click)="viewInAR(asset)">
+            <ion-icon slot="icon-only" name="scan"></ion-icon>
+          </ion-button>
+          
+          <ion-button 
+            slot="end" 
+            fill="clear" 
+            color="danger"
+            (click)="deleteAsset(asset)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+
+  </div>
+</ion-content>

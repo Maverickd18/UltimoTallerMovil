@@ -1,0 +1,84 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>AR Viewer</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Contenedor AR -->
+  <div id="ar-container">
+    <a-scene
+      #arScene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true; precision: medium;">
+      
+      <!-- Cámara AR -->
+      <a-entity camera></a-entity>
+      
+      <!-- Marcador dinámico -->
+      <a-marker 
+        #arMarker
+        [attr.preset]="markerType"
+        [attr.url]="markerUrl"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance="0.01"
+        smoothThreshold="5"
+        emitevents="true"
+        id="animated-marker">
+        
+        <!-- Contenedor para el modelo 3D o contenido AR -->
+        <a-entity 
+          #arContent
+          id="ar-content"
+          [attr.position]="contentPosition"
+          [attr.scale]="contentScale">
+        </a-entity>
+      </a-marker>
+    </a-scene>
+  </div>
+
+  <!-- Controles UI -->
+  <div class="ar-controls" *ngIf="!isMarkerVisible">
+    <div class="scanning-indicator">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Buscando marcador...</p>
+      <small>Apunta tu cámara al marcador AR</small>
+    </div>
+  </div>
+
+  <div class="ar-info" *ngIf="isMarkerVisible">
+    <ion-chip color="success">
+      <ion-icon name="checkmark-circle"></ion-icon>
+      <ion-label>Marcador detectado</ion-label>
+    </ion-chip>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="action-buttons">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button color="primary">
+        <ion-icon name="apps"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-list side="top">
+        <ion-fab-button color="light" (click)="changeModel('box')">
+          <ion-icon name="cube"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="light" (click)="changeModel('sphere')">
+          <ion-icon name="radio-button-on"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="light" (click)="changeModel('cylinder')">
+          <ion-icon name="battery-charging"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="light" (click)="takeScreenshot()">
+          <ion-icon name="camera"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+    </ion-fab>
+  </div>
+</ion-content>

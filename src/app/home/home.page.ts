@@ -42,4 +42,8 @@ export class HomePage implements OnInit {
     await this.authService.logout();
     // El servicio ya redirige a /login
   }
+
+  goToAR() {
+    this.router.navigate(['/ar-viewer']);
+  }
 }
