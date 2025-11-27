@@ -18,6 +18,7 @@
     font-size: 14px;
     color: #666;
     margin-bottom: 20px;
+    line-height: 1.6;
   }
 
   .upload-zone {
@@ -52,6 +53,54 @@
     small {
       font-size: 13px;
       color: #999;
+    }
+  }
+
+  .preview-section {
+    margin: 20px 0;
+    animation: fadeIn 0.3s ease;
+
+    ion-card {
+      margin: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      ion-card-header {
+        ion-card-subtitle {
+          color: var(--ion-color-primary);
+          font-weight: 600;
+          text-transform: uppercase;
+          font-size: 12px;
+        }
+
+        ion-card-title {
+          font-size: 16px;
+          color: #333;
+          margin-top: 5px;
+        }
+      }
+
+      ion-card-content {
+        .preview-image {
+          width: 100%;
+          max-height: 200px;
+          object-fit: contain;
+          border-radius: 8px;
+          margin-bottom: 15px;
+          background: #f8f9fa;
+        }
+
+        .preview-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+          color: #666;
+
+          ion-icon {
+            color: var(--ion-color-primary);
+          }
+        }
+      }
     }
   }
 }
@@ -133,14 +182,53 @@
         p {
           font-size: 13px;
           color: #999;
+          margin-bottom: 8px;
+        }
+
+        .marker-chip {
+          height: 24px;
+          margin: 4px 4px 0 0;
+          font-size: 11px;
+          
+          ion-icon {
+            font-size: 14px;
+            margin-right: 4px;
+          }
+
+          ion-label {
+            font-size: 11px;
+            font-weight: 600;
+          }
         }
       }
 
       ion-button {
         --padding-start: 8px;
         --padding-end: 8px;
+        margin: 0 2px;
       }
     }
+  }
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 
@@ -179,6 +267,20 @@
         p {
           font-size: 12px;
         }
+
+        .marker-chip {
+          font-size: 10px;
+          height: 20px;
+        }
+      }
+
+      ion-button {
+        --padding-start: 6px;
+        --padding-end: 6px;
+
+        ion-icon {
+          font-size: 18px;
+        }
       }
     }
   }
@@ -201,6 +303,26 @@
 
       small {
         color: #666;
+      }
+    }
+
+    .preview-section {
+      ion-card {
+        ion-card-header {
+          ion-card-title {
+            color: #ffffff;
+          }
+        }
+
+        ion-card-content {
+          .preview-image {
+            background: #1a1a1a;
+          }
+
+          .preview-info {
+            color: #a0a0a0;
+          }
+        }
       }
     }
   }

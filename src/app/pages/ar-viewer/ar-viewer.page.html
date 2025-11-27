@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>AR Viewer</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="showMarkerInfo()">
+        <ion-icon slot="icon-only" name="help-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -13,49 +18,73 @@
     <a-scene
       #arScene
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; matrixCodeType: 3x3_HAMMING_63;"
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true; precision: medium;">
       
       <!-- Cámara AR -->
       <a-entity camera></a-entity>
       
-      <!-- Marcador dinámico -->
+      <!-- Marcador Hiro (preestablecido - FUNCIONA!) -->
       <a-marker 
         #arMarker
-        [attr.preset]="markerType"
-        [attr.url]="markerUrl"
+        preset="hiro"
         smooth="true"
         smoothCount="10"
         smoothTolerance="0.01"
         smoothThreshold="5"
         emitevents="true"
-        id="animated-marker">
+        id="hiro-marker">
         
-        <!-- Contenedor para el modelo 3D o contenido AR -->
+        <!-- Contenedor para modelos 3D -->
         <a-entity 
           #arContent
           id="ar-content"
-          [attr.position]="contentPosition"
-          [attr.scale]="contentScale">
+          position="0 0.5 0"
+          scale="1 1 1">
+        </a-entity>
+      </a-marker>
+      
+      <!-- Marcador Kanji (alternativo) -->
+      <a-marker 
+        preset="kanji"
+        smooth="true"
+        smoothCount="10"
+        emitevents="true"
+        id="kanji-marker">
+        
+        <a-entity 
+          id="ar-content-kanji"
+          position="0 0.5 0"
+          scale="1 1 1">
         </a-entity>
       </a-marker>
     </a-scene>
   </div>
 
-  <!-- Controles UI -->
+  <!-- Panel de escaneo -->
   <div class="ar-controls" *ngIf="!isMarkerVisible">
     <div class="scanning-indicator">
       <ion-spinner name="crescent"></ion-spinner>
-      <p>Buscando marcador...</p>
-      <small>Apunta tu cámara al marcador AR</small>
+      <p>Buscando marcador Hiro o Kanji...</p>
+      <small>Descarga e imprime el marcador</small>
+      
+      <div class="marker-options">
+        <button class="marker-btn hiro-btn" (click)="downloadMarker('hiro')">
+          📥 Descargar Hiro
+        </button>
+        <button class="marker-btn kanji-btn" (click)="downloadMarker('kanji')">
+          📥 Descargar Kanji
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- Confirmación de detección -->
   <div class="ar-info" *ngIf="isMarkerVisible">
     <ion-chip color="success">
       <ion-icon name="checkmark-circle"></ion-icon>
-      <ion-label>Marcador detectado</ion-label>
+      <ion-label>✓ Marcador detectado</ion-label>
     </ion-chip>
   </div>
 
@@ -66,16 +95,22 @@
         <ion-icon name="apps"></ion-icon>
       </ion-fab-button>
       <ion-fab-list side="top">
-        <ion-fab-button color="light" (click)="changeModel('box')">
+        <ion-fab-button color="light" (click)="changeModel('box')" title="Cubo">
           <ion-icon name="cube"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button color="light" (click)="changeModel('sphere')">
+        <ion-fab-button color="light" (click)="changeModel('sphere')" title="Esfera">
           <ion-icon name="radio-button-on"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button color="light" (click)="changeModel('cylinder')">
+        <ion-fab-button color="light" (click)="changeModel('cylinder')" title="Cilindro">
           <ion-icon name="battery-charging"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button color="light" (click)="takeScreenshot()">
+        <ion-fab-button color="light" (click)="changeModel('pyramid')" title="Pirámide">
+          <ion-icon name="triangle"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="light" (click)="rotateContent()" title="Rotar">
+          <ion-icon name="sync"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="light" (click)="takeScreenshot()" title="Captura">
           <ion-icon name="camera"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>

@@ -18,7 +18,7 @@
     <!-- Upload Section -->
     <div class="upload-section">
       <h2>Subir Nuevo Asset</h2>
-      <p class="subtitle">Sube imágenes para usar en AR</p>
+      <p class="subtitle">Sube imágenes para usar en AR - Se generará un marcador automáticamente</p>
       
       <div class="upload-zone" (click)="fileInput.click()">
         <input 
@@ -31,6 +31,26 @@
         <ion-icon name="cloud-upload" class="upload-icon"></ion-icon>
         <p class="upload-text">Click para seleccionar imagen</p>
         <small>PNG, JPG, JPEG (Max 5MB)</small>
+        <small style="display: block; margin-top: 8px; color: #4285F4; font-weight: 600;">
+          🎯 Se creará un marcador personalizado
+        </small>
+      </div>
+
+      <!-- Preview del archivo seleccionado -->
+      <div *ngIf="selectedFile && !uploading" class="preview-section">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Vista previa</ion-card-subtitle>
+            <ion-card-title>{{ selectedFile.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <img *ngIf="previewUrl" [src]="previewUrl" alt="Preview" class="preview-image">
+            <p class="preview-info">
+              <ion-icon name="document"></ion-icon>
+              Tamaño: {{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB
+            </p>
+          </ion-card-content>
+        </ion-card>
       </div>
 
       <ion-button 
@@ -40,7 +60,8 @@
         (click)="uploadFile()"
         [disabled]="uploading">
         <ion-icon slot="start" name="cloud-upload"></ion-icon>
-        {{ uploading ? 'Subiendo...' : 'Subir ' + selectedFile.name }}
+        {{ uploading ? 'Subiendo y generando marcador...' : 'Subir ' + selectedFile.name }}
+        <ion-spinner *ngIf="uploading" name="crescent" slot="end"></ion-spinner>
       </ion-button>
     </div>
 
@@ -68,8 +89,27 @@
           <ion-label>
             <h3>{{ asset.name }}</h3>
             <p>{{ asset.created_at | date:'short' }}</p>
+            <ion-chip *ngIf="asset.marker_url" color="success" class="marker-chip">
+              <ion-icon name="qr-code"></ion-icon>
+              <ion-label>Marcador generado</ion-label>
+            </ion-chip>
+            <ion-chip *ngIf="!asset.marker_url" color="warning" class="marker-chip">
+              <ion-icon name="alert-circle"></ion-icon>
+              <ion-label>Sin marcador</ion-label>
+            </ion-chip>
           </ion-label>
           
+          <!-- Ver marcador -->
+          <ion-button 
+            *ngIf="asset.marker_url"
+            slot="end" 
+            fill="clear" 
+            color="secondary"
+            (click)="viewMarker(asset)">
+            <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+          </ion-button>
+
+          <!-- Ver en AR -->
           <ion-button 
             slot="end" 
             fill="clear" 
@@ -78,6 +118,7 @@
             <ion-icon slot="icon-only" name="scan"></ion-icon>
           </ion-button>
           
+          <!-- Eliminar -->
           <ion-button 
             slot="end" 
             fill="clear" 
